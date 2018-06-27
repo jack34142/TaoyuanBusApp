@@ -1,6 +1,11 @@
 # TaoyuanBusApp
 桃園公車何時來App
 
+## App 直接載點：
+		
+		https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing
+		
+
 ## 主要功能介紹：
 
 ### 1. 自動偵測附站點：
