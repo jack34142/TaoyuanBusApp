@@ -1,6 +1,8 @@
 # TaoyuanBusApp
 桃園公車何時來App
 
+## 目前版本：1.0.3
+
 ## App 直接載點：
 		
 		https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing
