@@ -128,4 +128,11 @@ public class MainListAdapter extends BaseAdapter{
 
         return v;
     }
+
+    public String[] getId_Name(int position){
+        String[] id_name = new String[2];
+        id_name[0] = list.get(position)[0];
+        id_name[1] = routeNameZh_map.get(id_name[0]);
+        return id_name;
+    }
 }

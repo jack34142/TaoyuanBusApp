@@ -11,12 +11,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.imge.yeezbus.CatchUtils.CatchUtils;
 import com.imge.yeezbus.adapter.MainFragmentPagetAdapter;
 import com.imge.yeezbus.model.MyWindowSize;
+import com.imge.yeezbus.tools.CountDown;
 import com.imge.yeezbus.tools.MyBusTools;
 import com.imge.yeezbus.tools.MyGpsTools;
 import java.util.List;
@@ -24,21 +29,25 @@ import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-    MyBusTools myBusTools;
-    public static Handler handler;
-    FragmentManager fragmentManager;
-    MainFragmentPagetAdapter adapter;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private TextView tv_count;
+    private Dialog dialog_wait;
+    public static TextView dialog_wait_tv;
+
+    public static Handler handler;
+    private MyBusTools myBusTools;
+    private CountDown countDown;
+
+    private FragmentManager fragmentManager;
+    private MainFragmentPagetAdapter adapter;
+
     Map<String,String> routeNameZh_map;
     Map<String,List> stopDetail_map;
     List<String> stop_distance_sort;        // get( index ) = 附近的站點，index 越小，站點的距離越近
     Map<String,Set<String>> nearStop_map;       // get( 站名 ) = 經過此站的 routeId_set
     List<List<String[]>> goBack_list;
-    int count = 0;
-    private TextView tv_count;
-    private Dialog dialog_wait;
-    public static TextView dialog_wait_tv;
+    private long firstTime=0;       //记录用户首次点击返回键的时间
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +64,16 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.main_viewPager);
         tabLayout = findViewById(R.id.main_tabLayout);
         tabLayout.setupWithViewPager(viewPager);        // 用來同步 viewPager 與 tabLayout
+
         getRouteNameZh();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        count = 2*60*60;
+        if(countDown != null){
+            countDown.setPause(true);
+        }
     }
 
     @Override
@@ -73,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        count = 0;
+        if(countDown != null){
+            countDown.setPause(false);
+        }
     }
 
     public void setHandler(){
@@ -111,10 +125,21 @@ public class MainActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                         // 修正Adapter更新後，自動跳轉至第一頁的問題
                         viewPager.setCurrentItem(nowPage);
-                        count = 20;
+
+                        countDown.resetCount();
                         break;
                     case 3:
-                        setCount();
+                        setCount(msg.arg1);
+
+                        if (msg.arg1 == 0){
+                            //取得附近站點
+                            List list = myBusTools.getNearStop(stopDetail_map);
+                            stop_distance_sort = (List<String>) list.get(0);
+                            nearStop_map = (Map<String, Set<String>>) list.get(1);
+
+                            // 取得經過此站的路線資料
+                            myBusTools.getJson_comeTime(nearStop_map, stop_distance_sort);
+                        }
                         break;
                     default:
                         break;
@@ -180,48 +205,58 @@ public class MainActivity extends AppCompatActivity {
         dialog_wait_tv.setText("正在取得附近路線資料");
         dialog_wait.show();
 
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                while(true){
-                    try{
-                        List list = myBusTools.getNearStop(stopDetail_map);
-                        stop_distance_sort = (List<String>) list.get(0);
-                        nearStop_map = (Map<String,Set<String>>) list.get(1);
-
-                        while(count > 0){
-                            // 設定倒數計時
-                            handler.sendEmptyMessage(3);
-                            Thread.sleep(1000);
-                        }
-
-                        // 取得經過此站的路線資料
-                        myBusTools.getJson_comeTime(nearStop_map, stop_distance_sort);
-
-                        while(count == 0){
-                            handler.sendEmptyMessage(3);
-                            Thread.sleep(500);
-                        }
-
-                    }catch (Exception e){}
-                }
-            }
-        }.start();
+        countDown = new CountDown();
+        countDown.start();
     }
 
-    public void setCount(){
+    public void setCount(final int count){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (count == 0){
                     tv_count.setText("更新中 ...");
-                }else if(count <= 20){
+                }else{
                     tv_count.setText("更新倒數 "+count+" 秒");
-                    count--;
-                }else{}
+                }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_option, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.update:
+                countDown.updateNow();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                long secondTime=System.currentTimeMillis();
+                if(secondTime-firstTime>2000){
+                    Toast.makeText(MainActivity.this,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+                    firstTime=secondTime;
+                    return true;
+                }else{
+                    System.exit(0);
+                }
+                break;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override
