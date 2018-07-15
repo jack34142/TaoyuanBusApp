@@ -5,16 +5,16 @@
 
 ## App 直接載點：
 
-	v1.0.3：
-		https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing
-
 	v1.1.0：
 		https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing
+
+	v1.0.3：
+		https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing
 
 
 ## 主要功能介紹：
 
-### v1.1.0：
+### 2018/07/16 v1.1.0：
 	1. 移除螢幕解鎖或打開程式時立即更新的功能，取而代之的是「手動更新按扭」。
 	註：程式縮小或螢幕關閉，一樣會停止自動更新，以保護流量的消耗。
 
@@ -26,7 +26,7 @@
 	4. 更新倒數優化。
 
 
-### v1.0.3：
+### 2018/06/27 v1.0.3：
 	1. 自動偵測「以自身為圓心，半徑250公尺」的公車站牌。
 	註：桃園地區才有效，因為只有下載桃園站點的資料。
 
