@@ -1,9 +1,12 @@
 # TaoyuanBusApp
 桃園公車何時來App
 
-## 最新版本：1.2.0
+## 最新版本：1.2.1
 
 ## App 直接載點：
+
+	v1.2.1
+		https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing
 
 	v1.2.0:
 		https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing
@@ -16,6 +19,11 @@
 
 
 ## 主要功能介紹：
+
+### 2018/07/21 v1.2.1：
+	1. 現在如果已經加到最愛，會提示。
+	2. 選單統一加寬，有利點擊。
+	3. 修正取得gps權限時發生的bug。
 
 ### 2018/07/21 v1.2.0：
 	1. 新增我的最愛功能

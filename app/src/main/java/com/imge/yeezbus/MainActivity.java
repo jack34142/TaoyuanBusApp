@@ -335,10 +335,9 @@ public class MainActivity extends AppCompatActivity {
         // requestCode == 1 是 MyGpsTools 設置的，用來檢查 Gps 權限
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dialog_wait.dismiss();
-                recreate();
                 Toast.makeText(MainActivity.this, "gps權限已取得", Toast.LENGTH_SHORT).show();
             } else { // if permission is not granted
+                dialog_wait.dismiss();
                 Toast.makeText(MainActivity.this, "若不提供GPS權限，將無法使用本產品。", Toast.LENGTH_SHORT).show();
 //                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);     // gps 設置頁面
 //                activity.startActivityForResult(intent,0);         //此为设置完成后返回到获取界面

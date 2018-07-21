@@ -94,8 +94,11 @@ public class MyFavorite {
 
             if(route_id != null){
                 favorite_dialog.dismiss();
-                CatchUtils.setFavorite(context, category_name, route_id);
-                Toast.makeText(context,"加到最愛成功", Toast.LENGTH_SHORT).show();
+                if(CatchUtils.setFavorite(context, category_name, route_id)){
+                    Toast.makeText(context,"加到最愛成功", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context,"已經是最愛了", Toast.LENGTH_SHORT).show();
+                }
             }else{
                 favorite_dialog.dismiss();
 

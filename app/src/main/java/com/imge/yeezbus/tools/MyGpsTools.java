@@ -21,6 +21,8 @@ public class MyGpsTools implements LocationListener {
         super();
         this.activity = activity;
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        // NETWORK_PROVIDER 速度較快
+        provider = LocationManager.GPS_PROVIDER;
 
         // 請求 gps 使用權限
         boolean permission_fine, permission_coarse;
@@ -34,8 +36,6 @@ public class MyGpsTools implements LocationListener {
             return;
         }
 
-        // NETWORK_PROVIDER 速度較快
-        provider = LocationManager.GPS_PROVIDER;
         // 執行時先抓一次 GPS
         locationManager.requestLocationUpdates(provider, 0, 0, this);
 

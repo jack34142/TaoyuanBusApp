@@ -108,12 +108,12 @@ public class CatchUtils {
         return null;
     }
 
-    public static void setFavorite(Context context, String category_name, String routeId){
+    public static boolean setFavorite(Context context, String category_name, String routeId){
         SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
         List<String> routeId_list = getFavorite(context, category_name);
 
         if(routeId_list.contains(routeId)){
-            return;
+            return false;
         }else{
             routeId_list.add(routeId);
         }
@@ -121,6 +121,7 @@ public class CatchUtils {
         String s = routeId_list.toString();
         s = s.substring(1, s.length()-1);
         sp.edit().putString(category_name, s).commit();
+        return true;
     }
 
     public static List<String> getFavorite(Context context, String category_name){
@@ -148,6 +149,11 @@ public class CatchUtils {
         String s = routeId_list.toString();
         s = s.substring(1, s.length()-1);
         sp.edit().putString(category_name, s).commit();
+    }
+
+    public static void deleteFavorite(Context context, String category_name){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+        sp.edit().remove(category_name).commit();
     }
 
 
@@ -202,10 +208,7 @@ public class CatchUtils {
         deleteFavorite(context,category_name);
     }
 
-    public static void deleteFavorite(Context context, String category_name){
-        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
-        sp.edit().remove(category_name).commit();
-    }
+
 
 
 

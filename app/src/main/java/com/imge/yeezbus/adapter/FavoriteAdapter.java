@@ -52,8 +52,8 @@ public class FavoriteAdapter extends BaseAdapter {
     public View getView(int position, View v, ViewGroup parent) {
         TextView tv = new TextView(context);
         tv.setText(category_name.get(position));
-        tv.setTextSize(16);
-        tv.setPadding(22,19,20,19);
+        tv.setTextSize(18);
+        tv.setPadding(22,20,20,20);
         tv.setGravity(Gravity.CENTER);
         return tv;
     }
