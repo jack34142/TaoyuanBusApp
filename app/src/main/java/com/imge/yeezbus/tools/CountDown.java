@@ -17,7 +17,7 @@ public class CountDown extends Thread{
             while (true){
                 if(isPause == true){
                     try{
-                        wait(1000);
+                        lock.wait(1000);
                     }catch (Exception e){}
                 }else{
                     Message msg = new Message();

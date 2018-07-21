@@ -25,7 +25,7 @@ public class MainListAdapter extends BaseAdapter{
         inflater = LayoutInflater.from(context);
         routeNameZh_map = CatchUtils.getRouteNameZh(context);
 
-        List<Integer> bus_one, bus_two, bus_three, bus_four;
+        List<Integer> bus_one, bus_two, bus_three, bus_four, bus_five;
         List<Integer> bus_two_val;
         List<String> bus_three_val;
 
@@ -33,6 +33,7 @@ public class MainListAdapter extends BaseAdapter{
         bus_two = new ArrayList<>();
         bus_three = new ArrayList<>();
         bus_four = new ArrayList<>();
+        bus_five = new ArrayList<>();
         bus_two_val = new ArrayList<>();
         bus_three_val = new ArrayList<>();
 
@@ -40,7 +41,8 @@ public class MainListAdapter extends BaseAdapter{
         for (int i=0; i<len_list; i++){
             String value = list.get(i)[1];
             if(value == null || value.equals("")){
-                continue;
+//                continue;
+                bus_five.add(i);
             }else if(value.equals("-3")){
                 bus_four.add(i);
             }else if(value.length() == 5){
@@ -80,6 +82,10 @@ public class MainListAdapter extends BaseAdapter{
             list_sort.add(list.get(i));
         }
 
+        for(int i : bus_five){
+            list_sort.add(list.get(i));
+        }
+
         this.list = list_sort;
     }
 
@@ -108,7 +114,10 @@ public class MainListAdapter extends BaseAdapter{
         String string_value = list.get(position)[1];
         String string_nextStop = list.get(position)[2];
 
-        if(string_value.equals("-3")){
+        if(string_value == null || string_value.equals("")){
+            value.setText("附近不停");
+            nextStop.setText(string_nextStop);
+        }else if(string_value.equals("-3")){
             value.setText("末班已過");
             nextStop.setText("");
         }else if(string_value.length() >= 4){
@@ -135,4 +144,10 @@ public class MainListAdapter extends BaseAdapter{
         id_name[1] = routeNameZh_map.get(id_name[0]);
         return id_name;
     }
+
+    public void removeView(int position){
+        list.remove(position);
+    }
+
+
 }

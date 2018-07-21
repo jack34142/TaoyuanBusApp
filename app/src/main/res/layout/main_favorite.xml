@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/favorite_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="我的最愛選單"
+        android:background="#F6F6F6"
+        android:textSize="20sp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:paddingLeft="16dp"/>
+
+    <ListView
+        android:id="@+id/favorite_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:id="@+id/favorite_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/favorite_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="textPersonName"
+            android:textSize="16sp"
+            android:hint="分類名稱"/>
+
+        <Button
+            android:id="@+id/favorite_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:textSize="14sp"
+            android:text="新增" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/favorite_new"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="6dp"
+        android:background="@drawable/btn_selector_white_gray"
+        android:text="＋ 新增分類" />
+
+    <Button
+        android:id="@+id/favorite_near"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_selector_white_gray"
+        android:text="附近的公車"/>
+
+    <Button
+        android:id="@+id/favorite_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="取消"
+        android:background="@drawable/btn_selector_white_gray"/>
+
+</LinearLayout>

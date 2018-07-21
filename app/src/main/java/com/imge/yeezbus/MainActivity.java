@@ -10,20 +10,24 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.imge.yeezbus.CatchUtils.CatchUtils;
 import com.imge.yeezbus.adapter.MainFragmentPagetAdapter;
 import com.imge.yeezbus.model.MyWindowSize;
+import com.imge.yeezbus.tools.CategoryNameSinTon;
 import com.imge.yeezbus.tools.CountDown;
 import com.imge.yeezbus.tools.MyBusTools;
+import com.imge.yeezbus.tools.MyFavorite;
 import com.imge.yeezbus.tools.MyGpsTools;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_count;
     private Dialog dialog_wait;
     public static TextView dialog_wait_tv;
+    private ProgressBar wait;
 
     public static Handler handler;
     private MyBusTools myBusTools;
@@ -47,18 +52,22 @@ public class MainActivity extends AppCompatActivity {
     List<String> stop_distance_sort;        // get( index ) = 附近的站點，index 越小，站點的距離越近
     Map<String,Set<String>> nearStop_map;       // get( 站名 ) = 經過此站的 routeId_set
     List<List<String[]>> goBack_list;
+    List<String> routeId_list;
+    private int mode = 0;       //0 = 附近站點, 1 = 最愛的站點
     private long firstTime=0;       //记录用户首次点击返回键的时间
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("附近的公車");
 
         setHandler();
         setDialog();
         myBusTools = new MyBusTools(MainActivity.this);
 
         tv_count = findViewById(R.id.main_count);
+        wait = findViewById(R.id.main_progressBar);
 
         fragmentManager = getSupportFragmentManager();
         viewPager = findViewById(R.id.main_viewPager);
@@ -126,19 +135,49 @@ public class MainActivity extends AppCompatActivity {
                         // 修正Adapter更新後，自動跳轉至第一頁的問題
                         viewPager.setCurrentItem(nowPage);
 
+                        // 消除切換模式的時出現的 progressBar
+                        wait.setVisibility(View.GONE);
+                        // 切換模式時修改 標題
+                        setTitle(CategoryNameSinTon.getInstence().getCategoryName());
+
                         countDown.resetCount();
                         break;
                     case 3:
                         setCount(msg.arg1);
 
                         if (msg.arg1 == 0){
-                            //取得附近站點
-                            List list = myBusTools.getNearStop(stopDetail_map);
-                            stop_distance_sort = (List<String>) list.get(0);
-                            nearStop_map = (Map<String, Set<String>>) list.get(1);
+                            download_info();
+                        }
+                        break;
+                    case 4:
+                        dialog_wait.dismiss();
+                        viewPager.removeAllViews();
+                        countDown.resetCount();
 
-                            // 取得經過此站的路線資料
-                            myBusTools.getJson_comeTime(nearStop_map, stop_distance_sort);
+                        // 消除切換模式的時出現的 progressBar
+                        wait.setVisibility(View.GONE);
+                        // 切換模式時修改 標題
+                        setTitle(CategoryNameSinTon.getInstence().getCategoryName());
+
+                        switch (mode){
+                            case 0:
+                                Toast.makeText(MainActivity.this,"找不到附近站點，或目前不處於桃園地區。",Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1:
+                                Toast.makeText(MainActivity.this,"你還沒有加入最愛的站點哦。",Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 5:
+                        // 判斷當前模式
+                        if(getTitle().equals(CategoryNameSinTon.getInstence().getCategoryName())){
+                            Toast.makeText(MainActivity.this,"已為此模式。",Toast.LENGTH_SHORT).show();
+                        }else{
+                            mode = msg.arg1;
+                            wait.setVisibility(View.VISIBLE);
+                            countDown.updateNow();
                         }
                         break;
                     default:
@@ -222,6 +261,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void download_info(){
+        //取得附近站點
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List list = myBusTools.getNearStop(stopDetail_map);
+                stop_distance_sort = (List<String>) list.get(0);
+
+                Set<String> routeId_set;
+                if (mode == 0){
+                    // 整合 routeId_map 變成 set
+                    nearStop_map = (Map<String, Set<String>>) list.get(1);
+                    routeId_set = myBusTools.deal_routeId(nearStop_map);
+                }else {
+                    routeId_list = CatchUtils.getFavorite(MainActivity.this, CategoryNameSinTon.getInstence().getCategoryName());
+                    routeId_set = myBusTools.deal_routeId(routeId_list);
+                }
+
+                if(routeId_set != null){
+                    // 取得經過此站的路線資料
+                    myBusTools.getJson_comeTime(routeId_set, stop_distance_sort);
+                }
+            }
+        }.start();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -234,6 +300,9 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.update:
                 countDown.updateNow();
+                break;
+            case R.id.favorite:
+                new MyFavorite(MainActivity.this).setFavorite();
                 break;
             default:
                 break;

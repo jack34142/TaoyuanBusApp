@@ -137,8 +137,8 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_option, menu);
+        menu.add(0, 0, 0, "更新");
+        menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
@@ -148,7 +148,7 @@ public class DetailActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.update:
+            case 0:
                 updateNow();
                 break;
             default:

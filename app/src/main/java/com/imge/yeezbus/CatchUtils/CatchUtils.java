@@ -3,13 +3,18 @@ package com.imge.yeezbus.CatchUtils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.imge.yeezbus.bean.StopDetailBean;
 import org.json.JSONArray;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CatchUtils {
     public static void setRouteNameZh(Context context, Map<String,String> routeNameZh_map){
@@ -103,8 +108,104 @@ public class CatchUtils {
         return null;
     }
 
+    public static void setFavorite(Context context, String category_name, String routeId){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+        List<String> routeId_list = getFavorite(context, category_name);
+
+        if(routeId_list.contains(routeId)){
+            return;
+        }else{
+            routeId_list.add(routeId);
+        }
+
+        String s = routeId_list.toString();
+        s = s.substring(1, s.length()-1);
+        sp.edit().putString(category_name, s).commit();
+    }
+
+    public static List<String> getFavorite(Context context, String category_name){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+
+        String routeId_str = sp.getString(category_name, "");
+        if(routeId_str.equals("")){
+            return new ArrayList<>();
+        }else{
+            return new ArrayList<>(Arrays.asList(routeId_str.split(", ")));
+        }
+    }
+
+    public static void deleteFavoriteItem(Context context, String category_name, String routeId){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+        List<String> routeId_list = getFavorite(context, category_name);
+
+        if(routeId_list.contains(routeId)){
+            int index = routeId_list.indexOf(routeId);
+            routeId_list.remove(index);
+        }else{
+            return;
+        }
+
+        String s = routeId_list.toString();
+        s = s.substring(1, s.length()-1);
+        sp.edit().putString(category_name, s).commit();
+    }
 
 
+    // direct = 0 最後, -1 = 下移, 1 上移
+    public static void setFavoriteSort(Context context, String category_name, int direct){
+        SharedPreferences sp = context.getSharedPreferences("FavoriteSort", Context.MODE_PRIVATE);
+        List<String> sort_list = getFavoriteSort(context);
+
+        if(direct == 1 || direct == -1){
+            int index = sort_list.indexOf(category_name);
+            sort_list.remove(index);
+            sort_list.add(index - direct, category_name);
+        }else if(sort_list.contains(category_name)){
+            Toast.makeText(context,"重複的分類名稱",Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            sort_list.add(category_name);
+        }
+
+        String s = sort_list.toString();
+        s = s.substring(1,s.length()-1);
+
+        sp.edit().putString("favorite_sort",s).commit();
+    }
+
+    public static List<String> getFavoriteSort(Context context){
+        SharedPreferences sp = context.getSharedPreferences("FavoriteSort", Context.MODE_PRIVATE);
+        String favorite_sort = sp.getString("favorite_sort","");
+
+        if(favorite_sort == ""){
+            return new ArrayList<>();
+        }else{
+            List<String> sort_list = new ArrayList<String>(Arrays.asList(favorite_sort.split(", ")));
+            return sort_list;
+        }
+    }
+
+    public static void deleteFavoriteSort(Context context, String category_name){
+        SharedPreferences sp = context.getSharedPreferences("FavoriteSort", Context.MODE_PRIVATE);
+        List<String> sort_list = getFavoriteSort(context);
+
+        if(sort_list.size() == 1){
+            sp.edit().remove("favorite_sort").commit();
+        }else{
+            int index = sort_list.indexOf(category_name);
+            sort_list.remove(index);
+            String s = sort_list.toString();
+            s = s.substring(1,s.length()-1);
+            sp.edit().putString("favorite_sort",s).commit();
+        }
+
+        deleteFavorite(context,category_name);
+    }
+
+    public static void deleteFavorite(Context context, String category_name){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+        sp.edit().remove(category_name).commit();
+    }
 
 
 

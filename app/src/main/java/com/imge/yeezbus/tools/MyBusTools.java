@@ -207,17 +207,32 @@ public class MyBusTools {
         return list;
     }
 
-    Set<String> routeId_set;
-    public void getJson_comeTime(Map<String,Set<String>> nearStop_map, final List<String> stop_distance_sort){
-        routeId_set = new HashSet<>();
+    public Set<String> deal_routeId(Map<String,Set<String>> nearStop_map){
+        Set<String> routeId_set = new HashSet<>();
         for (String key : nearStop_map.keySet()){
             routeId_set.addAll( nearStop_map.get(key) );
         }
 
         if (routeId_set.isEmpty()){
-            return;
+            MainActivity.handler.sendEmptyMessage(4);
+            return null;
         }
 
+        return routeId_set;
+    }
+
+    public Set<String> deal_routeId(List<String> nearStop_list){
+        Set<String> routeId_set = new HashSet<>(nearStop_list);
+
+        if (routeId_set.isEmpty()){
+            MainActivity.handler.sendEmptyMessage(4);
+            return null;
+        }
+
+        return routeId_set;
+    }
+
+    public void getJson_comeTime(final Set<String> routeId_set, final List<String> stop_distance_sort){
         String routeIds = routeId_set.toString();
         routeIds = routeIds.substring(1,routeIds.length()-1);
         routeIds = routeIds.replace(", ",",");
