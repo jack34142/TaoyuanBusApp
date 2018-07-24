@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
+
+    <TextView
+        android:id="@+id/search_stopName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="6dp"
+        android:text="站點名稱"
+        android:textSize="18sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/search_routeName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.35"
+        android:paddingLeft="6dp"
+        android:paddingRight="8dp"
+        android:text="路線名稱"
+        android:textSize="18sp" />
+
+</LinearLayout>

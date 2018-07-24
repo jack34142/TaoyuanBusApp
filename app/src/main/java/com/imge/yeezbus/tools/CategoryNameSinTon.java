@@ -1,9 +1,5 @@
 package com.imge.yeezbus.tools;
 
-import android.os.Message;
-
-import com.imge.yeezbus.MainActivity;
-
 public class CategoryNameSinTon {
     public static CategoryNameSinTon instance;
     private String categoryName;

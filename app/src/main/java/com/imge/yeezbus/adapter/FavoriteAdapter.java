@@ -3,19 +3,13 @@ package com.imge.yeezbus.adapter;
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.imge.yeezbus.CatchUtils.CatchUtils;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class FavoriteAdapter extends BaseAdapter {
     Context context;

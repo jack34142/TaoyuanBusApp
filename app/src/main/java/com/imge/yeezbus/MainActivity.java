@@ -1,6 +1,7 @@
 package com.imge.yeezbus;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
@@ -27,7 +28,6 @@ import com.imge.yeezbus.tools.CountDown;
 import com.imge.yeezbus.tools.MyBusTools;
 import com.imge.yeezbus.tools.MyFavorite;
 import com.imge.yeezbus.tools.MyGpsTools;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -303,6 +303,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.favorite:
                 new MyFavorite(MainActivity.this).setFavorite();
+                break;
+            case R.id.search:
+                Intent search_intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(search_intent);
                 break;
             default:
                 break;

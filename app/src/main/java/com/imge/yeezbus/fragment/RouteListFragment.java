@@ -12,20 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.imge.yeezbus.CatchUtils.CatchUtils;
 import com.imge.yeezbus.DetailActivity;
-import com.imge.yeezbus.MainActivity;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.adapter.MainListAdapter;
 import com.imge.yeezbus.tools.CategoryNameSinTon;
 import com.imge.yeezbus.tools.MyFavorite;
-
 import java.util.List;
 
 /**
@@ -96,7 +91,7 @@ public class RouteListFragment extends Fragment {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     String routeId = String.valueOf(adapter.getItemId(position));
-                    Log.e("test", CategoryNameSinTon.getInstence().getCategoryName());
+//                    Log.e("test", CategoryNameSinTon.getInstence().getCategoryName());
                     switch (item.getItemId()){
                         case R.id.main_add:
                             new MyFavorite(getContext(), routeId).setFavorite();

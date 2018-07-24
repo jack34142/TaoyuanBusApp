@@ -16,18 +16,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.imge.yeezbus.CatchUtils.CatchUtils;
 import com.imge.yeezbus.MainActivity;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.adapter.FavoriteAdapter;
-import com.imge.yeezbus.adapter.MainListAdapter;
-
-import org.w3c.dom.Text;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class MyFavorite {
     Context context;

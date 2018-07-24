@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.imge.yeezbus.bean.StopDetailBean;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class CatchUtils {
     public static void setRouteNameZh(Context context, Map<String,String> routeNameZh_map){
@@ -60,7 +57,7 @@ public class CatchUtils {
     /**
      * 格式：
      * Map.get( stopId ) = List;
-     * List.get(0) = List;              經過此站的公車路線
+     * List.get(0) = Set;              經過此站的公車路線
      * List.get(1) = String;            此站的中文名稱
      * List.get(2) = String;            此站的緯度
      * List.get(3) = String;            此站的經度
