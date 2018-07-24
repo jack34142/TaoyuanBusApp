@@ -6,7 +6,7 @@
 ## App 直接載點：
 
 	v1.3.0
-
+		https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing
 
 	v1.2.1
 		https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing
