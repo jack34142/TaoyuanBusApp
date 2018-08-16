@@ -103,29 +103,34 @@ public class MyBusTools {
                     try{
                         JSONArray jsonArray = new JSONArray(response);
                         int len_jsonArray = jsonArray.length();
-                        List stopDetail;
                         for (int i=0; i<len_jsonArray; i++){
+                            List stopDetail = new ArrayList<>();
                             RouteStopBean routeStopBean = gson.fromJson(jsonArray.getJSONObject(i).toString(), RouteStopBean.class);
 
                             Set<String> stop_route;
-                            if( stopDetail_map.keySet().contains(routeStopBean.getId()) ){
-                                stopDetail = stopDetail_map.get(routeStopBean.getId());
+                            // 避免重復的 key，我們以 ( 站名+緯度+經度 ) 命名
+                            String key = routeStopBean.getNameZh() +
+                                        routeStopBean.getLatitude() +
+                                        routeStopBean.getLongitude();
+
+                            if( stopDetail_map.keySet().contains(key) ){
+                                stopDetail = stopDetail_map.get(key);
                                 stop_route = (Set<String>) stopDetail.get(0);
 
                                 stop_route.add(routeStopBean.getRouteId());
                                 stopDetail.set(0,stop_route);
 
                             }else {
-                                stopDetail = new ArrayList<>();
                                 stop_route = new HashSet<>();
                                 stop_route.add(routeStopBean.getRouteId());
+
                                 stopDetail.add(stop_route);
                                 stopDetail.add(routeStopBean.getNameZh());
                                 stopDetail.add(routeStopBean.getLatitude());
                                 stopDetail.add(routeStopBean.getLongitude());
                             }
 
-                            stopDetail_map.put(routeStopBean.getId(),stopDetail);
+                            stopDetail_map.put(key ,stopDetail);
                         }
 
                         if(count == len_routeId_set){
@@ -210,6 +215,7 @@ public class MyBusTools {
     public Set<String> deal_routeId(Map<String,Set<String>> nearStop_map){
         Set<String> routeId_set = new HashSet<>();
         for (String key : nearStop_map.keySet()){
+//            Log.e("test", key +" : "+ nearStop_map.get(key).toString() );
             routeId_set.addAll( nearStop_map.get(key) );
         }
 

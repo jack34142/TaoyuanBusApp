@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.imge.yeezbus.adapter.SearchListAdapter;
+import com.imge.yeezbus.tools.KeyBoard;
 import com.imge.yeezbus.tools.MyFavorite;
 
 public class SearchActivity extends AppCompatActivity {
@@ -93,10 +94,7 @@ public class SearchActivity extends AppCompatActivity {
     View.OnClickListener myOkListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
-            }
+            KeyBoard.hideKeyBoard(SearchActivity.this);
 
             String data = editText.getText().toString();
             data = data.trim();

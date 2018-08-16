@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.imge.yeezbus.bean.StopDetailBean;
+import com.imge.yeezbus.config.Config;
+
 import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +16,28 @@ import java.util.List;
 import java.util.Map;
 
 public class CatchUtils {
+    // 更新到最新版本號
+    public static void setVersionCode(Context context){
+        SharedPreferences sp = context.getSharedPreferences("VersionCode", Context.MODE_PRIVATE);
+
+        int versionCode = Config.getVersionCode(context);
+        Log.e("test2", String.valueOf(versionCode));
+
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("versionCode", versionCode);
+        editor.commit();
+    }
+
+    // 取得上次更新時的版本號
+    public static int getVersionCode(Context context){
+        SharedPreferences sp = context.getSharedPreferences("VersionCode", Context.MODE_PRIVATE);
+
+        // 上次更新時的版本號
+        int lastVersionCode = sp.getInt("versionCode", 0);
+        Log.e("test", String.valueOf(lastVersionCode));
+        return sp.getInt("versionCode", 0);
+    }
+
     public static void setRouteNameZh(Context context, Map<String,String> routeNameZh_map){
         SharedPreferences sp = context.getSharedPreferences("RouteNameZh", Context.MODE_PRIVATE);
 
@@ -121,6 +145,23 @@ public class CatchUtils {
         return true;
     }
 
+    public static void renameFavorite(Context context, String category_name, String new_category_name){
+        SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
+
+        if(!renameFavoriteSort(context, category_name, new_category_name)){
+            Toast.makeText(context,"重複的分類名稱",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<String> routeId_list = getFavorite(context, category_name);
+
+        String s = routeId_list.toString();
+        s = s.substring(1, s.length()-1);
+        sp.edit().putString(new_category_name, s).commit();
+
+        deleteFavorite(context, category_name);
+    }
+
     public static List<String> getFavorite(Context context, String category_name){
         SharedPreferences sp = context.getSharedPreferences("Favorite", Context.MODE_PRIVATE);
 
@@ -203,6 +244,23 @@ public class CatchUtils {
         }
 
         deleteFavorite(context,category_name);
+    }
+
+    public static boolean renameFavoriteSort(Context context, String category_name, String new_category_name){
+        SharedPreferences sp = context.getSharedPreferences("FavoriteSort", Context.MODE_PRIVATE);
+        List<String> sort_list = getFavoriteSort(context);
+
+        if(sort_list.contains(new_category_name)){
+            return false;
+        }else{
+            int index = sort_list.indexOf(category_name);
+            sort_list.set(index, new_category_name);
+        }
+
+        String s = sort_list.toString();
+        s = s.substring(1,s.length()-1);
+        sp.edit().putString("favorite_sort",s).commit();
+        return true;
     }
 
 

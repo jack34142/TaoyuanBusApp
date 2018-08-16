@@ -84,10 +84,11 @@
 
         <TextView
             android:id="@+id/main_count"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="6dp"
-            android:text="定位中 ..."
+            android:text="定位中 ... 如果過久，建議重開機。"
             android:textSize="18sp" />
 
     </LinearLayout>

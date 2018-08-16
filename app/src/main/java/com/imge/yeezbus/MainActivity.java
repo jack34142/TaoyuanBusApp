@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> routeId_list;
     private int mode = 0;       //0 = 附近站點, 1 = 最愛的站點
     private long firstTime=0;       //记录用户首次点击返回键的时间
+    private boolean needToUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +118,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:     // 取得站點資料後，找到附近的站點
                         dialog_wait.dismiss();
-                        if(stopDetail_map == null){
+
+                        if(needToUpdate){
                             stopDetail_map = CatchUtils.getStopDetail(MainActivity.this);
+                            CatchUtils.setVersionCode(MainActivity.this);
                         }
 
                         new MyGpsTools(MainActivity.this);      // 設定 gps 的 listener
+                        tv_count.setVisibility(View.VISIBLE);
                         getNearStop();      // 取得附近站點，並取得經過此站的路線資料
                         break;
                     case 2:
@@ -223,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void getStopDetails(){
         stopDetail_map = CatchUtils.getStopDetail(MainActivity.this);
-        if(stopDetail_map == null){
+        needToUpdate = CatchUtils.getVersionCode(MainActivity.this)<10;
+        if(needToUpdate){
             dialog_wait_tv.setText("正在下載各站點的資料");
             dialog_wait.show();
 //            Log.d("true", "null");

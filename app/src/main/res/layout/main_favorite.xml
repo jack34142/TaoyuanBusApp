@@ -35,6 +35,8 @@
             android:layout_weight="1"
             android:inputType="textPersonName"
             android:textSize="16sp"
+            android:layout_marginLeft="4dp"
+            android:paddingLeft="8dp"
             android:hint="分類名稱"/>
 
         <Button

@@ -34,6 +34,8 @@ public class DetailActivity extends AppCompatActivity {
     private String route_name;
     private StringRequest request;
     private boolean isUpdate;
+    private int goBack = 0;
+    private int nowPage = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +51,14 @@ public class DetailActivity extends AppCompatActivity {
             route_id = bundle.getString("route_id");
             route_name = bundle.getString("route_name");
             setTitle(route_name);
+            goBack = bundle.getInt("goBack");
         }
 
         progressBar = findViewById(R.id.detail_progressBar);
         tabLayout = findViewById(R.id.detail_tabLayout);
         viewPager = findViewById(R.id.detail_viewPager);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(goBack);
 
         isUpdate = false;
         getDetail(route_id);
@@ -102,10 +106,17 @@ public class DetailActivity extends AppCompatActivity {
                     go_back.add(go_detail);
                     go_back.add(back_detail);
 
+                    if(nowPage == -1){
+                        nowPage = goBack;
+                    }else{
+                        nowPage = tabLayout.getSelectedTabPosition();
+                    }
+                    Log.e("test",String.valueOf(goBack));
                     detailPagerAdapter = new DetailPagerAdapter(DetailActivity.this, go_back);
                     viewPager.setAdapter(detailPagerAdapter);
                     progressBar.setVisibility(View.GONE);
                     isUpdate = true;
+                    viewPager.setCurrentItem(nowPage);
 
                 }catch (Exception e){
                     Log.e("DetailActivity","getDetail() 解析json失敗");

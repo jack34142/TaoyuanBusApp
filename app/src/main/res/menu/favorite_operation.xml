@@ -9,6 +9,9 @@
         android:id="@+id/favorite_down"
         android:title="下移" />
     <item
+        android:id="@+id/favorite_rename"
+        android:title="重新命名" />
+    <item
         android:id="@+id/favorite_delete"
         android:title="刪除" />
     <item

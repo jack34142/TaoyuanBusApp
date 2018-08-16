@@ -30,6 +30,7 @@ public class RouteListFragment extends Fragment {
     private ListView listView;
     private List<String[]> list;
     private MainListAdapter adapter;
+    private int goBack;
 
     public RouteListFragment() {
         // Required empty public constructor
@@ -57,8 +58,9 @@ public class RouteListFragment extends Fragment {
         listView.setOnItemLongClickListener(myLongListener);
     }
 
-    public void setData(List<String[]> list){
+    public void setData(List<String[]> list, int goBack){
         this.list = list;
+        this.goBack = goBack;
     }
 
     AdapterView.OnItemClickListener myListener = new AdapterView.OnItemClickListener() {
@@ -69,6 +71,7 @@ public class RouteListFragment extends Fragment {
             Intent detail_intent = new Intent(getContext(), DetailActivity.class);
             detail_intent.putExtra("route_id",id_name[0]);
             detail_intent.putExtra("route_name",id_name[1]);
+            detail_intent.putExtra("goBack",goBack);
             startActivity(detail_intent);
         }
     };

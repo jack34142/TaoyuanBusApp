@@ -19,7 +19,7 @@ public class MainFragmentPagetAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         fragment = new RouteListFragment();
-        fragment.setData(list.get(position));
+        fragment.setData(list.get(position), position);
         return fragment;
     }
 

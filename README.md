@@ -4,24 +4,37 @@
 ## 最新版本：1.3.0
 
 ## App 直接載點：
+	v1.3.1
+		<https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing>
 
 	v1.3.0
-		https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing
+		<https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing>
 
 	v1.2.1
-		https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing
+		<https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing>
 
 	v1.2.0:
-		https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing
+		<https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing>
 
 	v1.1.0：
-		https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing
+		<https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing>
 
 	v1.0.3：
-		https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing
+		<https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing>
 
 
 ## 主要功能介紹：
+
+### 2018/08/16 v1.3.1：
+	1. 修正某些公車明明不會經過附近站點，卻會顯示的問題。
+	2. 修正某些站點找不到的問題。
+	3. 配合上述2點修正，v1.3.1 版本前的站點資料將會從新下載。
+	4. 我的最愛新增重新命名功能
+	5. 優化詳細資料頁面：
+		(1) 現在你在返程頁點擊選單時，
+			跳出的詳細資料頁也會停留在返程頁了。
+		(2) 點選更新時，也會根據當前的所在頁作停留。
+
 
 ### 2018/07/24 v1.3.0：
 	1. 新增搜尋系統

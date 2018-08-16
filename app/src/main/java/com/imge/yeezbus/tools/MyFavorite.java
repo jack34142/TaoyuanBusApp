@@ -4,15 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import com.imge.yeezbus.CatchUtils.CatchUtils;
 import com.imge.yeezbus.MainActivity;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.adapter.FavoriteAdapter;
+import com.imge.yeezbus.model.MyWindowSize;
 
 public class MyFavorite {
     Context context;
@@ -30,10 +30,11 @@ public class MyFavorite {
     private Button favorite_cancel;
     private EditText favorite_editText;
     private Button favorite_ok;
-    private ListAdapter adapter;
+    private FavoriteAdapter adapter;
     private Button favorite_near;
 
     private String route_id;
+    private String newName;
 
     public MyFavorite(Context context) {
         super();
@@ -105,7 +106,7 @@ public class MyFavorite {
 
     AdapterView.OnItemLongClickListener myLongListener = new AdapterView.OnItemLongClickListener() {
         @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
             PopupMenu popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.favorite_operation);
 
@@ -122,6 +123,11 @@ public class MyFavorite {
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+                    if(item.getItemId() == R.id.favorite_rename){
+                        getNewName(view);
+                        return true;
+                    }
+
                     switch (item.getItemId()){
                         case R.id.favorite_up:
                             CatchUtils.setFavoriteSort(context, (String) adapter.getItem(position),1);
@@ -179,6 +185,12 @@ public class MyFavorite {
         @Override
         public void onClick(View v) {
             String category_name = favorite_editText.getText().toString();
+            category_name = category_name.trim();
+            if(category_name.equals("")){
+                Toast.makeText(context,"請輸入內容", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             CatchUtils.setFavoriteSort(context,category_name,0);
 
             favorite_dialog.dismiss();
@@ -186,6 +198,48 @@ public class MyFavorite {
         }
     };
 
+    public void getNewName(View view){
+        favorite_dialog.dismiss();
 
+//        String old_name = ((TextView)view.findViewById(R.id.favorite_item)).getText().toString();
+        final String old_name = ((TextView)view).getText().toString();
 
+        final Dialog rename_dialog = new Dialog(context);
+        rename_dialog.setContentView(R.layout.main_favorite_rename);
+        MyWindowSize myWindowSize = new MyWindowSize(context);
+        WindowManager.LayoutParams p = myWindowSize.setSize(-1,0.85);
+        rename_dialog.getWindow().setAttributes(p);
+        TextView rename_title = rename_dialog.findViewById(R.id.rename_title);
+        rename_title.setText(old_name);
+        rename_dialog.show();
+
+        Button rename_ok = rename_dialog.findViewById(R.id.rename_ok);
+        Button rename_cancel = rename_dialog.findViewById(R.id.rename_cancel);
+        final EditText rename_editText = rename_dialog.findViewById(R.id.rename_editText);
+
+        rename_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rename_dialog.dismiss();
+                setFavorite();
+            }
+        });
+
+        rename_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newName = rename_editText.getText().toString();
+
+                newName = newName.trim();
+                if(newName.equals("")){
+                    Toast.makeText(context,"請輸入內容", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                CatchUtils.renameFavorite(context, old_name, newName);
+                rename_dialog.dismiss();
+                setFavorite();
+            }
+        });
+    }
 }
