@@ -5,22 +5,22 @@
 
 ## App 直接載點：
 	v1.3.1
-		[Google Drive](https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing)
+<https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing>
 
 	v1.3.0
-		[Google Drive](https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing)
+<https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing>
 
 	v1.2.1
-		[Google Drive](https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing)
+<https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing>
 
 	v1.2.0:
-		[Google Drive](https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing)
+<https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing>
 
 	v1.1.0：
-		[Google Drive](https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing)
+<https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing>
 
 	v1.0.3：
-		[Google Drive](https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing)
+<https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing>
 
 
 ## 主要功能介紹：
