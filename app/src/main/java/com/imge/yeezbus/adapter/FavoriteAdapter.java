@@ -1,15 +1,13 @@
 package com.imge.yeezbus.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
-import com.imge.yeezbus.R;
+import com.imge.yeezbus.CatchUtils.CatchFavorite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +22,11 @@ public class FavoriteAdapter extends BaseAdapter {
         this.context = context;
         inflater = LayoutInflater.from(context);
 
-        category_name = CatchUtils.getFavoriteSort(context);
+        category_name = CatchFavorite.getFavoriteSort(context);
         if(category_name.isEmpty()){
             category_name = new ArrayList<>();
-            CatchUtils.setFavoriteSort(context,"我的最愛",0);
-            category_name = CatchUtils.getFavoriteSort(context);
+            CatchFavorite.setFavoriteSort(context,"我的最愛",0);
+            category_name = CatchFavorite.getFavoriteSort(context);
         }
     }
 

@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
+
+import com.imge.yeezbus.CatchUtils.CatchBusDetails;
 import com.imge.yeezbus.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class SearchListAdapter extends BaseAdapter {
     }
 
     public void search_routeName(String data){
-        Map<String, String> routeNameZh = CatchUtils.getRouteNameZh(context);
+        Map<String, String> routeNameZh = CatchBusDetails.getRouteNameZh(context);
 
         routeId_list = new ArrayList<>();
         routeName_list = new ArrayList<>();
@@ -95,7 +96,7 @@ public class SearchListAdapter extends BaseAdapter {
     }
 
     public void search_stopName(String data){
-        Map<String, List> stopDetail = CatchUtils.getStopDetail(context);
+        Map<String, List> stopDetail = CatchBusDetails.getStopDetail(context);
 
         stopName_list = new ArrayList<>();
         routeId_list = new ArrayList<>();
@@ -117,7 +118,7 @@ public class SearchListAdapter extends BaseAdapter {
         if(routeId_list.isEmpty()){
             Toast.makeText(context, "查無資料", Toast.LENGTH_SHORT).show();
         }else{
-            Map<String, String> routeNameZh = CatchUtils.getRouteNameZh(context);
+            Map<String, String> routeNameZh = CatchBusDetails.getRouteNameZh(context);
             for(String routeId : routeId_list){
                 routeName_list.add(routeNameZh.get(routeId));
             }

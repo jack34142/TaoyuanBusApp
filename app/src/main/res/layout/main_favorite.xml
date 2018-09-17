@@ -48,20 +48,61 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/favorite_new"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingRight="6dp"
-        android:background="@drawable/btn_selector_white_gray"
-        android:text="＋ 新增分類" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/favorite_new"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingRight="6dp"
+            android:background="@drawable/btn_selector_white_gray"
+            android:text="＋ 新增分類"
+            android:textColor="#999999"/>
 
-    <Button
-        android:id="@+id/favorite_near"
+        <Button
+            android:id="@+id/favorite_near"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_selector_white_gray"
+            android:text="附近的公車"
+            android:textColor="#ff0000"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/btn_selector_white_gray"
-        android:text="附近的公車"/>
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <RadioGroup
+            android:id="@+id/favorite_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#ffffff">
+            <RadioButton
+                android:id="@+id/radio_go"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:text="去程"/>
+            <RadioButton
+                android:id="@+id/radio_back"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:text="返程"/>
+            <RadioButton
+                android:id="@+id/radio_both"
+                android:visibility="gone"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:text="去+返"/>
+
+        </RadioGroup>
+
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/favorite_cancel"

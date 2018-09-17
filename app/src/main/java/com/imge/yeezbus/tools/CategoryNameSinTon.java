@@ -6,7 +6,7 @@ public class CategoryNameSinTon {
 
     private CategoryNameSinTon() {
         super();
-        categoryName = "附近的公車";
+        categoryName = "";
     }
 
     public static CategoryNameSinTon getInstence() {

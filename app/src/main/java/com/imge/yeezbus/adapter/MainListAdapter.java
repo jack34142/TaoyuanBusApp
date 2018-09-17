@@ -6,7 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
+
+import com.imge.yeezbus.CatchUtils.CatchBusDetails;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.comparator.ListIntegerComparator;
 import com.imge.yeezbus.comparator.ListStringComparator;
@@ -23,7 +24,7 @@ public class MainListAdapter extends BaseAdapter{
     public MainListAdapter(Context context, List<String[]> list) {
         super();
         inflater = LayoutInflater.from(context);
-        routeNameZh_map = CatchUtils.getRouteNameZh(context);
+        routeNameZh_map = CatchBusDetails.getRouteNameZh(context);
 
         List<Integer> bus_one, bus_two, bus_three, bus_four, bus_five;
         List<Integer> bus_two_val;

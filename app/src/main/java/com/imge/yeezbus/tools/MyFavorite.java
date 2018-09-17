@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +14,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
+import com.imge.yeezbus.CatchUtils.CatchFavorite;
 import com.imge.yeezbus.MainActivity;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.adapter.FavoriteAdapter;
 import com.imge.yeezbus.model.MyWindowSize;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyFavorite {
     Context context;
@@ -32,9 +40,12 @@ public class MyFavorite {
     private Button favorite_ok;
     private FavoriteAdapter adapter;
     private Button favorite_near;
+    private RadioGroup favorite_radio;
+    private RadioButton radio_go, radio_back, radio_both;
 
     private String route_id;
     private String newName;
+    private int nowPage = NowPageSinTon.getInstence().getNowPage();
 
     public MyFavorite(Context context) {
         super();
@@ -58,15 +69,28 @@ public class MyFavorite {
         favorite_editText = favorite_dialog.findViewById(R.id.favorite_editText);
         favorite_ok = favorite_dialog.findViewById(R.id.favorite_ok);
         favorite_near = favorite_dialog.findViewById(R.id.favorite_near);
+        favorite_radio = favorite_dialog.findViewById(R.id.favorite_radio);
+        radio_go = favorite_dialog.findViewById(R.id.radio_go);
+        radio_back = favorite_dialog.findViewById(R.id.radio_back);
+        radio_both = favorite_dialog.findViewById(R.id.radio_both);
 
         if(route_id != null){
             favorite_near.setVisibility(View.GONE);
             TextView title = favorite_dialog.findViewById(R.id.favorite_title);
             title.setText("請選擇一個分類");
+            radio_both.setVisibility(View.VISIBLE);
         }else{
             favorite_near.setOnClickListener(myNearListener);
         }
 
+        switch (nowPage){
+            case 0:
+                radio_go.setChecked(true);
+                break;
+            case 1:
+                radio_back.setChecked(true);
+                break;
+        }
 
         adapter = new FavoriteAdapter(context);
         favorite_list.setAdapter(adapter);
@@ -77,8 +101,25 @@ public class MyFavorite {
         favorite_cancel.setOnClickListener(myCancelListener);
         favorite_ok.setOnClickListener(myOkListener);
 
+        favorite_radio.setOnCheckedChangeListener(myRadioListener);
         favorite_dialog.show();
     }
+
+    RadioGroup.OnCheckedChangeListener myRadioListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch(checkedId){
+                case R.id.radio_go:
+                    nowPage = 0;
+                    break;
+                case R.id.radio_back:
+                    nowPage = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     AdapterView.OnItemClickListener myListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -86,8 +127,24 @@ public class MyFavorite {
             String category_name = (String) adapter.getItem(position);
 
             if(route_id != null){
+                Map<String, List<Boolean>> routeId_goBack = new HashMap<>();
+                List<Boolean> goBack_list = new ArrayList<>();
+
+                if(radio_go.isChecked()){
+                    goBack_list.add(true);
+                    goBack_list.add(false);
+                }else if(radio_back.isChecked()){
+                    goBack_list.add(false);
+                    goBack_list.add(true);
+                }else{
+                    goBack_list.add(true);
+                    goBack_list.add(true);
+                }
+                routeId_goBack.put(route_id, goBack_list);
+
                 favorite_dialog.dismiss();
-                if(CatchUtils.setFavorite(context, category_name, route_id)){
+
+                if(CatchFavorite.setFavorite(context, category_name, routeId_goBack)){
                     Toast.makeText(context,"加到最愛成功", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(context,"已經是最愛了", Toast.LENGTH_SHORT).show();
@@ -99,6 +156,7 @@ public class MyFavorite {
                 Message msg = new Message();
                 msg.what = 5;
                 msg.arg1 = 1;
+                NowPageSinTon.getInstence().setNowPage(nowPage);
                 MainActivity.handler.handleMessage(msg);
             }
         }
@@ -130,13 +188,13 @@ public class MyFavorite {
 
                     switch (item.getItemId()){
                         case R.id.favorite_up:
-                            CatchUtils.setFavoriteSort(context, (String) adapter.getItem(position),1);
+                            CatchFavorite.setFavoriteSort(context, (String) adapter.getItem(position),1);
                             break;
                         case R.id.favorite_down:
-                            CatchUtils.setFavoriteSort(context, (String) adapter.getItem(position),-1);
+                            CatchFavorite.setFavoriteSort(context, (String) adapter.getItem(position),-1);
                             break;
                         case R.id.favorite_delete:
-                            CatchUtils.deleteFavoriteSort(context, (String) adapter.getItem(position));
+                            CatchFavorite.deleteFavorite(context, (String) adapter.getItem(position));
                             break;
                         default:
                             return true;
@@ -159,6 +217,7 @@ public class MyFavorite {
             Message msg = new Message();
             msg.what = 5;
             msg.arg1 = 0;
+            NowPageSinTon.getInstence().setNowPage(nowPage);
             MainActivity.handler.handleMessage(msg);
         }
     };
@@ -191,7 +250,7 @@ public class MyFavorite {
                 return;
             }
 
-            CatchUtils.setFavoriteSort(context,category_name,0);
+            CatchFavorite.setFavoriteSort(context,category_name,0);
 
             favorite_dialog.dismiss();
             setFavorite();
@@ -236,7 +295,7 @@ public class MyFavorite {
                     return;
                 }
 
-                CatchUtils.renameFavorite(context, old_name, newName);
+                CatchFavorite.renameFavorite(context, old_name, newName);
                 rename_dialog.dismiss();
                 setFavorite();
             }

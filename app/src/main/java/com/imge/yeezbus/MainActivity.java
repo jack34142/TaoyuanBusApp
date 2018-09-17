@@ -21,7 +21,10 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
+
+import com.imge.yeezbus.CatchUtils.CatchBusDetails;
+import com.imge.yeezbus.CatchUtils.CatchFavorite;
+import com.imge.yeezbus.CatchUtils.CatchVersion;
 import com.imge.yeezbus.adapter.MainFragmentPagetAdapter;
 import com.imge.yeezbus.model.MyWindowSize;
 import com.imge.yeezbus.tools.CategoryNameSinTon;
@@ -29,6 +32,9 @@ import com.imge.yeezbus.tools.CountDown;
 import com.imge.yeezbus.tools.MyBusTools;
 import com.imge.yeezbus.tools.MyFavorite;
 import com.imge.yeezbus.tools.MyGpsTools;
+import com.imge.yeezbus.tools.NowPageSinTon;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> stop_distance_sort;        // get( index ) = 附近的站點，index 越小，站點的距離越近
     Map<String,Set<String>> nearStop_map;       // get( 站名 ) = 經過此站的 routeId_set
     List<List<String[]>> goBack_list;
-    List<String> routeId_list;
-    private int mode = 0;       //0 = 附近站點, 1 = 最愛的站點
+    private int mode = -1;       //0 = 附近站點, 1 = 最愛的站點
     private long firstTime=0;       //记录用户首次点击返回键的时间
     private boolean needToUpdate;
 
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("附近的公車");
+        setTitle("");
 
         setHandler();
         setDialog();
@@ -76,8 +81,25 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.main_tabLayout);
         tabLayout.setupWithViewPager(viewPager);        // 用來同步 viewPager 與 tabLayout
 
+        viewPager.addOnPageChangeListener(myPageListener);
+
         getRouteNameZh();
     }
+
+    ViewPager.OnPageChangeListener myPageListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            NowPageSinTon.getInstence().setNowPage(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    };
 
     @Override
     protected void onPause() {
@@ -111,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:     // 取得路線中文名後，取得站點資料
                         dialog_wait.dismiss();
                         if(routeNameZh_map.isEmpty()){
-                            routeNameZh_map = CatchUtils.getRouteNameZh(MainActivity.this);
+                            routeNameZh_map = CatchBusDetails.getRouteNameZh(MainActivity.this);
                         }
 
                         getStopDetails();
@@ -120,25 +142,27 @@ public class MainActivity extends AppCompatActivity {
                         dialog_wait.dismiss();
 
                         if(needToUpdate){
-                            stopDetail_map = CatchUtils.getStopDetail(MainActivity.this);
-                            CatchUtils.setVersionCode(MainActivity.this);
+                            stopDetail_map = CatchBusDetails.getStopDetail(MainActivity.this);
+                            CatchVersion.setVersionCode(MainActivity.this);
                         }
 
                         new MyGpsTools(MainActivity.this);      // 設定 gps 的 listener
                         tv_count.setVisibility(View.VISIBLE);
-                        getNearStop();      // 取得附近站點，並取得經過此站的路線資料
+
+                        if(mode == -1){
+                            initMode();     // 選擇最愛
+                        }
                         break;
                     case 2:
                         dialog_wait.dismiss();
-
-                        int nowPage = tabLayout.getSelectedTabPosition();
                         goBack_list = (List<List<String[]>>)msg.obj;
 
                         adapter = new MainFragmentPagetAdapter(fragmentManager, goBack_list);
                         viewPager.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                         // 修正Adapter更新後，自動跳轉至第一頁的問題
-                        viewPager.setCurrentItem(nowPage);
+                        Log.e("test",String.valueOf(NowPageSinTon.getInstence().getNowPage()));
+                        viewPager.setCurrentItem(NowPageSinTon.getInstence().getNowPage());
 
                         // 消除切換模式的時出現的 progressBar
                         wait.setVisibility(View.GONE);
@@ -207,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getRouteNameZh(){
-        routeNameZh_map = CatchUtils.getRouteNameZh(MainActivity.this);
+        routeNameZh_map = CatchBusDetails.getRouteNameZh(MainActivity.this);
         if(routeNameZh_map.isEmpty()){
             dialog_wait_tv.setText("正在下載路線中文名稱");
             dialog_wait.show();
@@ -227,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getStopDetails(){
-        stopDetail_map = CatchUtils.getStopDetail(MainActivity.this);
-        needToUpdate = CatchUtils.getVersionCode(MainActivity.this)<10;
+        stopDetail_map = CatchBusDetails.getStopDetail(MainActivity.this);
+        needToUpdate = CatchVersion.getVersionCode(MainActivity.this)<10;
         if(needToUpdate){
             dialog_wait_tv.setText("正在下載各站點的資料");
             dialog_wait.show();
@@ -246,12 +270,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getNearStop(){
-        dialog_wait_tv.setText("正在取得附近路線資料");
-        dialog_wait.show();
-
+    public void initMode(){
         countDown = new CountDown();
         countDown.start();
+
+        new MyFavorite(MainActivity.this).setFavorite();
+
+//        dialog_wait_tv.setText("正在取得附近路線資料");
+//        dialog_wait.show();
     }
 
     public void setCount(final int count){
@@ -281,14 +307,19 @@ public class MainActivity extends AppCompatActivity {
                     // 整合 routeId_map 變成 set
                     nearStop_map = (Map<String, Set<String>>) list.get(1);
                     routeId_set = myBusTools.deal_routeId(nearStop_map);
-                }else {
-                    routeId_list = CatchUtils.getFavorite(MainActivity.this, CategoryNameSinTon.getInstence().getCategoryName());
-                    routeId_set = myBusTools.deal_routeId(routeId_list);
-                }
 
-                if(routeId_set != null){
-                    // 取得經過此站的路線資料
-                    myBusTools.getJson_comeTime(routeId_set, stop_distance_sort);
+                    if(routeId_set != null){
+                        // 取得經過此站的路線資料
+                        myBusTools.getJson_comeTime(routeId_set, stop_distance_sort);
+                    }
+                }else {
+                    Map<String, List<Boolean>> favorite_map = CatchFavorite.getFavorite(MainActivity.this, CategoryNameSinTon.getInstence().getCategoryName());
+                    if(!favorite_map.isEmpty()){
+                        // 取得經過此站的路線資料
+                        myBusTools.getJson_favoriteComeTime(favorite_map, stop_distance_sort);
+                    }else{
+                        handler.sendEmptyMessage(4);
+                    }
                 }
             }
         }.start();

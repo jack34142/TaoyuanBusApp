@@ -1,23 +1,39 @@
 # TaoyuanBusApp
 桃園公車何時來App
+		！！！附近的公車功能，只有桃園地區能使用請特別注意！！！
 
-## 最新版本：1.3.1
+## 最新版本：1.4.0
 
 ## App 直接載點：
-v1.3.1		[Google Drive 載點](https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing)
+v1.4.0　　[Google Drive 載點](https://drive.google.com/file/d/1qieVV-xEp6Gf9fkLzyHpR-5PV5FvhaFS/view?usp=sharing)
 
-v1.3.0		[Google Drive 載點](https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing)
+v1.3.1　　[Google Drive 載點](https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing)
 
-v1.2.1		[Google Drive 載點](https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing)
+v1.3.0　　[Google Drive 載點](https://drive.google.com/file/d/19aNilojBkGwjO0JyHvpJzefh9_3kDeDC/view?usp=sharing)
 
-v1.2.0		[Google Drive 載點](https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing)
+v1.2.1　　[Google Drive 載點](https://drive.google.com/file/d/1jaymsHA3hWpEdG0b1UZpzrVQVKjAhiHM/view?usp=sharing)
 
-v1.1.0		[Google Drive 載點](https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing)
+v1.2.0　　[Google Drive 載點](https://drive.google.com/file/d/1vFlKngNIeUF6fa9Hp4pNYe5sGKuZwxN7/view?usp=sharing)
 
-v1.0.3		[Google Drive 載點](https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing)
+v1.1.0　　[Google Drive 載點](https://drive.google.com/file/d/1UyThkjrKUkW-x3ocCv2xvgmqpGyDmZIz/view?usp=sharing)
+
+v1.0.3　　[Google Drive 載點](https://drive.google.com/file/d/1tB0qA-Y-LzH2XgKmOBIc1ugmx30BpMmo/view?usp=sharing)
 
 
 ## 主要功能介紹：
+
+### 2018/09/17 v1.4.0：
+	1. 取消預設使用「附近的公車」模式，
+	   取而代之的是手動選擇「我的最愛」或是「附近的公車」模式。
+	註1：「附近的公車」將用紅字顯示，避免新用互找不到這個選項。
+	註2：最愛的模式選擇，可以先選擇去程是或返程了。
+
+	2. 現在最愛的公車可以單獨加入去程或是返程了。
+	3. 優化下一站功能，當有複數相同一路線的公車進行時，
+	   舊版的App下一站只會提示最新發出的公車，
+	   但我們比較想知道的應該是最接近我們的公車，
+	   而不是那些剛發車的公車，現在會正確判斷了。
+
 
 ### 2018/08/16 v1.3.1：
 	1. 修正某些公車明明不會經過附近站點，卻會顯示的問題。

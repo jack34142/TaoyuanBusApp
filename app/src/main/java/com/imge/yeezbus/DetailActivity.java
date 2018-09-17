@@ -111,7 +111,7 @@ public class DetailActivity extends AppCompatActivity {
                     }else{
                         nowPage = tabLayout.getSelectedTabPosition();
                     }
-                    Log.e("test",String.valueOf(goBack));
+//                    Log.e("test",String.valueOf(goBack));
                     detailPagerAdapter = new DetailPagerAdapter(DetailActivity.this, go_back);
                     viewPager.setAdapter(detailPagerAdapter);
                     progressBar.setVisibility(View.GONE);

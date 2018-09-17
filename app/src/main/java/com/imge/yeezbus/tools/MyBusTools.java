@@ -7,7 +7,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
-import com.imge.yeezbus.CatchUtils.CatchUtils;
+import com.imge.yeezbus.CatchUtils.CatchBusDetails;
 import com.imge.yeezbus.MainActivity;
 import com.imge.yeezbus.bean.ComeTimeBean;
 import com.imge.yeezbus.bean.RouteStopBean;
@@ -64,7 +64,7 @@ public class MyBusTools {
                     Log.e("MyBusTools","getRouteNameZh() 解析JSON錯誤");
                 }
 
-                CatchUtils.setRouteNameZh(context, map);
+                CatchBusDetails.setRouteNameZh(context, map);
                 MainActivity.handler.sendEmptyMessage(0);
 
             }
@@ -134,7 +134,7 @@ public class MyBusTools {
                         }
 
                         if(count == len_routeId_set){
-                            CatchUtils.setStopDetail(context, stopDetail_map);
+                            CatchBusDetails.setStopDetail(context, stopDetail_map);
                             MainActivity.handler.sendEmptyMessage(1);
                         }
                     }catch (Exception e){
@@ -258,6 +258,8 @@ public class MyBusTools {
                         JSONArray jsonArray = jsonObject.getJSONArray(key);
                         String[] comeTime_go_ary = new String[3];
                         String[] comeTime_back_ary = new String[3];
+                        int nextStopTime_go = 0;
+                        int nextStopTime_back = 0;
                         Map<String, String> value_go_map = new HashMap<>();
                         Map<String, String> value_back_map = new HashMap<>();
 
@@ -270,7 +272,24 @@ public class MyBusTools {
                                 case 1:
                                     if(comeTime_go_ary[2]==null){
                                         if(!comeTimeBean.getValue().equals("null") && !comeTimeBean.getValue().equals("-3")){
+                                            nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
                                             comeTime_go_ary[2] = comeTimeBean.getStopName();
+                                        }
+                                    }else{
+                                        if(nextStopTime_go != -1){
+                                            if (Integer.parseInt(comeTimeBean.getValue()) >= nextStopTime_go){
+                                                nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
+                                            }else{
+                                                nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
+                                                comeTime_go_ary[2] = comeTimeBean.getStopName();
+                                            }
+
+                                            for (String s : stop_distance_sort){
+                                                if(comeTimeBean.getStopName().equals(s)){
+                                                    nextStopTime_go = -1;
+                                                    break;
+                                                }
+                                            }
                                         }
                                     }
 
@@ -284,7 +303,24 @@ public class MyBusTools {
                                 case 2:
                                     if(comeTime_back_ary[2]==null){
                                         if(!comeTimeBean.getValue().equals("null") && !comeTimeBean.getValue().equals("-3")){
+                                            nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
                                             comeTime_back_ary[2] = comeTimeBean.getStopName();
+                                        }
+                                    }else{
+                                        if(nextStopTime_back != -1){
+                                            if (Integer.parseInt(comeTimeBean.getValue()) >= nextStopTime_back){
+                                                nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
+                                            }else{
+                                                nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
+                                                comeTime_back_ary[2] = comeTimeBean.getStopName();
+                                            }
+
+                                            for (String s : stop_distance_sort){
+                                                if(comeTimeBean.getStopName().equals(s)){
+                                                    nextStopTime_back = -1;
+                                                    break;
+                                                }
+                                            }
                                         }
                                     }
 
@@ -347,6 +383,172 @@ public class MyBusTools {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("MyBusTools","getJson_comeTime() 的 Response.ErrorListener()");
+                error.printStackTrace();
+                MyVolley.getInstance(context).addToRequestQue(request);
+            }
+        });
+
+        MyVolley.getInstance(context).addToRequestQue(request);
+    }
+
+    public void getJson_favoriteComeTime(final Map<String, List<Boolean>> routeId_goBack, final List<String> stop_distance_sort){
+        final Set<String> routeId_set = routeId_goBack.keySet();
+        String routeIds = routeId_set.toString();
+        routeIds = routeIds.substring(1,routeIds.length()-1);
+        routeIds = routeIds.replace(", ",",");
+//        Log.d("test", routeIds);
+
+        String json_url = "http://apidata.tycg.gov.tw/OPD-io/bus4/GetEstimateTime.json?routeIds=" + routeIds;
+        request = new StringRequest(json_url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson = new Gson();
+                List<String[]> go_list = new ArrayList<>();
+                List<String[]> back_list = new ArrayList<>();
+
+                try{
+                    JSONObject jsonObject = new JSONObject(response);
+                    for(String key : routeId_set){
+                        JSONArray jsonArray = jsonObject.getJSONArray(key);
+                        String[] comeTime_go_ary = new String[3];
+                        String[] comeTime_back_ary = new String[3];
+                        int nextStopTime_go = 0;
+                        int nextStopTime_back = 0;
+                        Map<String, String> value_go_map = new HashMap<>();
+                        Map<String, String> value_back_map = new HashMap<>();
+
+                        comeTime_go_ary[0] = comeTime_back_ary[0] = key;
+                        int len_jsonArray = jsonArray.length();
+                        for (int i=0; i<len_jsonArray; i++){
+                            ComeTimeBean comeTimeBean = gson.fromJson(jsonArray.getJSONObject(i).toString(), ComeTimeBean.class);
+
+                            switch (comeTimeBean.getGoBack()){
+                                case 1:
+                                    if(!routeId_goBack.get(key).get(0)){
+                                        continue;
+                                    }
+
+                                    if(comeTime_go_ary[2]==null){
+                                        if(!comeTimeBean.getValue().equals("null") && !comeTimeBean.getValue().equals("-3")){
+                                            nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
+                                            comeTime_go_ary[2] = comeTimeBean.getStopName();
+                                        }
+                                    }else{
+                                        if(nextStopTime_go != -1){
+                                            if (Integer.parseInt(comeTimeBean.getValue()) >= nextStopTime_go){
+                                                nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
+                                            }else{
+                                                nextStopTime_go = Integer.parseInt(comeTimeBean.getValue());
+                                                comeTime_go_ary[2] = comeTimeBean.getStopName();
+                                            }
+
+                                            for (String s : stop_distance_sort){
+                                                if(comeTimeBean.getStopName().equals(s)){
+                                                    nextStopTime_go = -1;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (comeTimeBean.getValue().equals("null")){
+                                        value_go_map.put(comeTimeBean.getStopName(), comeTimeBean.getComeTime());
+                                    }else{
+                                        value_go_map.put(comeTimeBean.getStopName(), comeTimeBean.getValue());
+                                    }
+
+                                    break;
+                                case 2:
+                                    if(!routeId_goBack.get(key).get(1)){
+                                        continue;
+                                    }
+
+                                    if(comeTime_back_ary[2]==null){
+                                        if(!comeTimeBean.getValue().equals("null") && !comeTimeBean.getValue().equals("-3")){
+                                            nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
+                                            comeTime_back_ary[2] = comeTimeBean.getStopName();
+                                        }
+                                    }else{
+                                        if(nextStopTime_back != -1){
+                                            if (Integer.parseInt(comeTimeBean.getValue()) >= nextStopTime_back){
+                                                nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
+                                            }else{
+                                                nextStopTime_back = Integer.parseInt(comeTimeBean.getValue());
+                                                comeTime_back_ary[2] = comeTimeBean.getStopName();
+                                            }
+
+                                            for (String s : stop_distance_sort){
+                                                if(comeTimeBean.getStopName().equals(s)){
+                                                    nextStopTime_back = -1;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (comeTimeBean.getValue().equals("null")){
+                                        value_back_map.put(comeTimeBean.getStopName(), comeTimeBean.getComeTime());
+                                    }else{
+                                        value_back_map.put(comeTimeBean.getStopName(), comeTimeBean.getValue());
+                                    }
+
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        if(routeId_goBack.get(key).get(0)){
+                            for (String s : stop_distance_sort){
+                                if(value_go_map.keySet().contains(s)){
+                                    if(comeTime_go_ary[2] == null){
+                                        comeTime_go_ary[1] = value_go_map.get(s);
+                                    }else if(!comeTime_go_ary[2].equals(s)){
+                                        comeTime_go_ary[1] = value_go_map.get(s);
+                                    }else{
+                                        comeTime_go_ary[1] = "即將進站";
+                                    }
+                                    break;
+                                }
+                            }
+                            go_list.add(comeTime_go_ary);
+                        }
+
+                        if(routeId_goBack.get(key).get(1)) {
+                            for (String s : stop_distance_sort) {
+                                if (value_back_map.keySet().contains(s)) {
+                                    if (comeTime_back_ary[2] == null) {
+                                        comeTime_back_ary[1] = value_back_map.get(s);
+                                    } else if (!comeTime_back_ary[2].equals(s)) {
+                                        comeTime_back_ary[1] = value_back_map.get(s);
+                                    } else {
+                                        comeTime_back_ary[1] = "即將進站";
+                                    }
+                                    break;
+                                }
+                            }
+                            back_list.add(comeTime_back_ary);
+                        }
+
+                    }
+
+                    List<List<String[]>> list = new ArrayList<>();
+                    list.add(go_list);
+                    list.add(back_list);
+                    Message msg = new Message();
+                    msg.what = 2;
+                    msg.obj = list;
+                    MainActivity.handler.handleMessage(msg);
+
+                }catch (Exception e){
+                    Log.e("MyBusTools","getJson_FavoriteComeTime() 解析 json 失敗");
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("MyBusTools","getJson_FavoriteComeTime() 的 Response.ErrorListener()");
                 error.printStackTrace();
                 MyVolley.getInstance(context).addToRequestQue(request);
             }
