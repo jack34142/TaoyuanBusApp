@@ -6,6 +6,8 @@
 ## 最新版本：1.4.0
 
 ## App 直接載點：
+v1.4.1　　[Google Drive 載點](https://drive.google.com/file/d/1gYmlr9LUpL0qWs604DhhC35FfTCwWqvD/view?usp=sharing)
+
 v1.4.0　　[Google Drive 載點](https://drive.google.com/file/d/1qieVV-xEp6Gf9fkLzyHpR-5PV5FvhaFS/view?usp=sharing)
 
 v1.3.1　　[Google Drive 載點](https://drive.google.com/file/d/1qSpkjHOZwRkV2_WbyWIWLDnhtMRqOa0d/view?usp=sharing)
@@ -22,6 +24,11 @@ v1.0.3　　[Google Drive 載點](https://drive.google.com/file/d/1tB0qA-Y-LzH2X
 
 
 ## 主要功能介紹：
+
+### 2018/09/18 v1.4.1：
+	1. 修正在列表更新後，點擊加到最愛或是刪除最愛，導致閃退的問題。
+	2. 修正在列表更新後，刪除最愛功能不會立即刪除的問題。
+
 
 ### 2018/09/17 v1.4.0：
 	1. 取消預設使用「附近的公車」模式，

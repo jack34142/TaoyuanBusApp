@@ -1,6 +1,7 @@
 package com.imge.yeezbus.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.imge.yeezbus.DetailActivity;
 import com.imge.yeezbus.R;
 import com.imge.yeezbus.adapter.MainListAdapter;
 import com.imge.yeezbus.tools.CategoryNameSinTon;
+import com.imge.yeezbus.tools.GetLastAdapter;
 import com.imge.yeezbus.tools.MyFavorite;
 import com.imge.yeezbus.tools.NowPageSinTon;
 
@@ -31,6 +33,7 @@ public class RouteListFragment extends Fragment {
     private ListView listView;
     private List<String[]> list;
     private MainListAdapter adapter;
+    private Context context;
     private int goBack;
 
     public RouteListFragment() {
@@ -51,8 +54,10 @@ public class RouteListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        context = getContext();
 
-        adapter = new MainListAdapter(getContext(), list);
+        adapter = new MainListAdapter(context, list);
+        GetLastAdapter.setAdapter(adapter, goBack);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(myListener);
@@ -69,7 +74,7 @@ public class RouteListFragment extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String[] id_name = adapter.getId_Name(position);
 
-            Intent detail_intent = new Intent(getContext(), DetailActivity.class);
+            Intent detail_intent = new Intent(context, DetailActivity.class);
             detail_intent.putExtra("route_id",id_name[0]);
             detail_intent.putExtra("route_name",id_name[1]);
             detail_intent.putExtra("goBack",goBack);
@@ -80,7 +85,8 @@ public class RouteListFragment extends Fragment {
     AdapterView.OnItemLongClickListener myLongListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
-            PopupMenu popupMenu = new PopupMenu(getContext(), view);
+            final String routeId = String.valueOf(adapter.getItemId(position));
+            PopupMenu popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.main_list_operation);
             popupMenu.show();
 
@@ -94,17 +100,18 @@ public class RouteListFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    String routeId = String.valueOf(adapter.getItemId(position));
+
 //                    Log.e("test", CategoryNameSinTon.getInstence().getCategoryName());
                     switch (item.getItemId()){
                         case R.id.main_add:
-                            new MyFavorite(getContext(), routeId).setFavorite();
+                            new MyFavorite(context, routeId).setFavorite();
                             break;
                         case R.id.main_delete:
-                            CatchFavorite.deleteFavoriteItem(getContext(), CategoryNameSinTon.getInstence().getCategoryName(), routeId, NowPageSinTon.getInstence().getNowPage());
+                            CatchFavorite.deleteFavoriteItem(context, CategoryNameSinTon.getInstence().getCategoryName(), routeId, NowPageSinTon.getInstence().getNowPage());
+                            adapter = GetLastAdapter.getAdapter(goBack);
                             adapter.removeView(position);
                             adapter.notifyDataSetChanged();
-                            Toast.makeText(getContext(),"刪除成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"刪除成功", Toast.LENGTH_SHORT).show();
                             break;
                         default:
                             break;
